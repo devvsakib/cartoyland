@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 
 const Banner = () => {
   const [coupon, setCoupon] = useState('CT50')
@@ -24,7 +25,9 @@ const Banner = () => {
               <h1 className="text-6xl lg:text-8xl font-semibold  lg:mb-5">CarToyLand</h1>
               <p className=" text-2xl">Unleash the Joy of Toy Cars!</p>
               <div className='grid gap-5  mt-8'>
-                <button className="bg-white px-5 py-2 rounded text-xl font-semibold text-accent">Shop</button>
+                <Link href='/alltoys'>
+                  <button className="bg-white px-5 py-2 rounded text-xl font-semibold text-accent">Shop</button>
+                </Link>
                 {/* <button className="bg-white px-5 py-2 rounded text-xl font-semibold text-accent">Register</button> */}
               </div>
             </div>
