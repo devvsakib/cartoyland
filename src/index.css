@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-primary: #8d99ae;
+    --color-primary-light: #b5bcc8;
+    --color-primary-dark: #626b7e;
+
+    --color-secondary: #2b2d42;
+    --color-secondary-light: #4e5166;
+    --color-secondary-dark: #0f101a;
+
+    --color-background: #edf2f4;
+    --color-background-light: #f6f8f9;
+    --color-background-dark: #c8d0d5;
+
+    --color-accent: #ef233c;
+    --color-accent-light: #ff5e74;
+    --color-accent-dark: #bb182b;
+}
+
+body[data-aos-duration='4000'] [data-aos],
+[data-aos][data-aos][data-aos-duration='4000'] {
+    transition-duration: 4000ms;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.banner__gradient {
+
+    /* ff 3.6+ */
+    background: -moz-radial-gradient(circle at 9% 12%, rgba(108, 99, 255, 0.68) 0%, rgba(238, 130, 238, 0) 100%);
+
+    /* safari 5.1+,chrome 10+ */
+    background: -webkit-radial-gradient(circle at 9% 12%, rgba(108, 99, 255, 0.68) 0%, rgba(238, 130, 238, 0) 100%);
+
+    /* opera 11.10+ */
+    background: -o-radial-gradient(circle at 9% 12%, rgba(108, 99, 255, 0.68) 0%, rgba(238, 130, 238, 0) 100%);
+
+    /* ie 10+ */
+    background: -ms-radial-gradient(circle at 9% 12%, rgba(108, 99, 255, 0.68) 0%, rgba(238, 130, 238, 0) 100%);
+
+    /* global 92%+ browsers support */
+    background: radial-gradient(circle at 9% 12%, rgba(108, 99, 255, 0.68) 0%, rgba(238, 130, 238, 0) 100%);
+
+}
+
+.card__gradient {
+
+    /* ff 3.6+ */
+    background: -moz-linear-gradient(90deg, rgba(54, 133, 244, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+    /* safari 5.1+,chrome 10+ */
+    background: -webkit-linear-gradient(90deg, rgba(54, 133, 244, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+    /* opera 11.10+ */
+    background: -o-linear-gradient(90deg, rgba(54, 133, 244, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+    /* ie 6-9 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ee82ee', endColorstr='#3685F4', GradientType=0);
+
+    /* ie 10+ */
+    background: -ms-linear-gradient(90deg, rgba(54, 133, 244, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+    /* global 94%+ browsers support */
+    background: linear-gradient(90deg, rgba(54, 133, 244, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+}
+
+.loginBG::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url("/images/login.svg") no-repeat center right;
+    background-size: cover;
+    transform: scaleX(-1);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.registerBG::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url("/images/login.svg") no-repeat center right;
+    background-size: cover;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.btns {
+    @apply bg-white shadow-xl hover:shadow-lg hover:bg-accent hover:text-white transition-all duration-200 ease-linear px-5 py-1 sm:py-2 rounded sm:text-xl font-semibold text-accent gap-3 border
+}
