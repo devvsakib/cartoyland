@@ -33,7 +33,6 @@ const AddToyForm = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Handle the response from the backend
       })
       .catch((error) => {
         console.error('Error:', error);

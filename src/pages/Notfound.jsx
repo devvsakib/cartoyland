@@ -1,6 +1,5 @@
 import React from 'react'
 import Button from '../components/Common/Button'
-import { Link } from 'react-router-dom'
 
 const Notfound = () => {
     return (

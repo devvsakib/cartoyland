@@ -54,10 +54,10 @@ export default function StickyHeadTable() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredToys, setFilteredToys] = useState([]);
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true)
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [sortOrder, setSortOrder] = useState('asc');
   const { totalToys } = useLoaderData();
-  console.log(totalToys);
   const totalPages = Math.ceil(totalToys / itemsPerPage);
 
   const handleChangePage = (newPage) => {
@@ -71,8 +71,9 @@ export default function StickyHeadTable() {
         // Sort the toys based on price if sortOrder is 'asc'
         const sortedToys = sortOrder === 'asc' ? res.sort((a, b) => a.price - b.price) : res;
         setToys(sortedToys);
+        setLoading(false)
       } catch (error) {
-        console.log(error);
+        setLoading(false)
       }
     };
     getToys();
@@ -86,11 +87,13 @@ export default function StickyHeadTable() {
   const sortIcon = sortOrder === 'asc' ? '▲' : '▼';
 
   const handleSearch = () => {
+    setLoading(true)
     const filtered = toys.filter((toy) =>
-      toy.name.toLowerCase().includes(searchTerm.toLowerCase())
+    toy.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredToys(filtered);
     setPage(0);
+    setLoading(false)
   };
 
   const pageNumbers = [...Array(totalPages).keys()];
@@ -129,31 +132,42 @@ export default function StickyHeadTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(searchTerm ? filteredToys : toys).map((row, index) => (
-                  <TableRow
-                  hover role='checkbox' tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell
-                         
-                          key={column.id} align={column.align}>
-                          {typeof value === 'string' && value.includes('https://') ? (
-                            <img className='w-20' src={value} alt='' />
-                          ) : column.id === '' ? (
-                            <Link to={`/toy/${row._id}`}>
-                              <PrimaryButton text={'View'} />
-                            </Link>
-                          ) : column.id === 'price' ? (
-                            `$${value}`
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
+                {
+                  loading ?
+                    <TableRow>
+                      <TableCell colSpan={columns.length} align='center'>
+                        <div className='w-full flex justify-center items-center my-10'>
+                          <img className='w-16' src="/images/loading.gif" />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    :
+                    (searchTerm ? filteredToys : toys).map((row, index) => (
+                      <TableRow
+                        hover role='checkbox' tabIndex={-1} key={row.code}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+
+                              key={column.id} align={column.align}>
+                              {typeof value === 'string' && value.includes('https://') ? (
+                                <img className='w-20' src={value} alt='' />
+                              ) : column.id === '' ? (
+                                <Link to={`/toy/${row._id}`}>
+                                  <PrimaryButton text={'View'} />
+                                </Link>
+                              ) : column.id === 'price' ? (
+                                `$${value}`
+                              ) : (
+                                value
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+
                 {searchTerm &&
                   (filteredToys.length === 0 || filteredToys.length === undefined) && (
                     <TableRow>
@@ -169,7 +183,7 @@ export default function StickyHeadTable() {
             {pageNumbers.map((number) => (
               <button
                 key={number}
-                className={`p-1 px-3 mx-2 ${page === number + 1
+                className={`p-1 px-3 mx-2 ${page === number + 1 
                   ? 'bg-accent text-white shadow-xl hover:shadow-lg hover:bg-accent px-5 py-2 rounded text-xl font-semibold text-accent gap-3'
                   : 'btns'
                   }`}

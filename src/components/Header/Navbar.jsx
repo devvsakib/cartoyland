@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom'
-import { FaShoppingCart, FaUser } from 'react-icons/fa'
+import { FaShoppingCart } from 'react-icons/fa'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../contexts/AuthProvider'
 import PrimaryButton from '../Common/PrimaryButton'
+import { CartContext } from '../../contexts/CartProvider'
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext)
@@ -10,20 +11,22 @@ const Navbar = () => {
     const [showPath, setShowPath] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
     const pathName = useLocation().pathname
+
+    const { totalItems } = useContext(CartContext); 
+
     useEffect(() => {
         setShowPath(!pathName.startsWith('/toy/'));
         setPath(pathName.slice(1) ?? '')
     }, [pathName])
     const handleOpenMenu = () => {
         setMenuOpen(!menuOpen)
-        console.log(123);
     }
 
     return (
         <nav className='py-4 backdrop-blur-sm z-10  w-full bg-white/40 border-b-[1px] border-black/30'>
-            <div className='flex justify-between items-center'>
-                <div>
-                    <Link to="/" className='font-barlow text-2xl relative font-semibold'>CarToyLand<span className='capitalize font-thin absolute top-0 bottom-0 -right-14'>
+            <div className='flex gap-10 justify-between items-center'>
+                <div className='relative'>
+                    <Link to="/" className='font-barlow text-2xl font-semibold'>CarToyLand<span className='capitalize font-thin absolute top-0 bottom-0 -right-16 text-md'>
                         {showPath && pathName !== '/' && ` | ${path}`}
                     </span></Link>
                 </div>
@@ -58,14 +61,21 @@ const Navbar = () => {
                     {!user && <li><Link to="/login">Login</Link></li>}
                 </ul>
                 <div className='flex items-center gap-5'>
-                    <FaShoppingCart />
+                    <Link to="/cart">
+                        <div className="indicator">
+                            <span className="indicator-item badge bg-accent w-5 h-5 rounded-full border-none">{totalItems}</span>
+                            <FaShoppingCart className='text-2xl' />
+                        </div>
+                    </Link>
                     {
                         user && <>
                             <div className="dropdown dropdown-end">
-                                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                                    <div className="w-10 mask mask-hexagon">
+                                <label tabIndex={0} className="btn group btn-ghost relative btn-circle avatar">
+                                    <div className="w-10  mask mask-hexagon">
                                         <img src={user.photoURL} />
                                     </div>
+                                    <p className="hidden w-40 bg-secondary items-center rounded-full justify-center shadow-sm text-[16px] py-2 px-3 text-accent group-hover:flex bottom-0 top-0 right-12 absolute">{user?.displayName}</p>
+
                                 </label>
                                 <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-5 shadow bg-base-100 rounded-box w-52">
                                     <li>{user.displayName}</li>

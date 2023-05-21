@@ -15,6 +15,8 @@ import API from './lib/API';
 import AddToy from './pages/AddToy';
 import Blogs from './pages/Blogs';
 import MyToys from './pages/MyToys';
+import { CartProvider } from './contexts/CartProvider';
+import Cart from './pages/Cart';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "blogs",
         element: <Blogs />,
+      },
+      {
+        path: "cart",
+        element: <Private><Cart /></Private>,
       }
     ]
   },
@@ -62,10 +68,13 @@ const router = createBrowserRouter([
   }
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <CartProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </CartProvider>
   </React.StrictMode>,
-)
+  document.getElementById('root')
+);

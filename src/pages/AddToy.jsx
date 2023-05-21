@@ -18,9 +18,11 @@ const AddToy = () => {
   };
 
   const [formValues, setFormValues] = useState(initialValues);
+  const [loading, setLoading] = useState(true);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+   
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData);
 
@@ -67,7 +69,7 @@ const AddToy = () => {
       return;
     }
 
-    if (!toyData){}
+    if (!toyData) { }
 
     if (!toyData.availableQuantity) {
       toast.error('Available quantity is required');
@@ -78,18 +80,19 @@ const AddToy = () => {
       toast.error('Detail description is required');
       return;
     }
+    setLoading(false);
     try {
       const response = await API.addToy(toyData);
-      console.log(response);
-  
       toast.success('Toy added successfully!');
       setFormValues(initialValues); // Reset the form values
       e.target.reset(); // Reset the form fields
+      setLoading(true);
     } catch (error) {
-      console.error('Error adding toy:', error);
       toast.error('Failed to add toy. Please try again.');
+      setLoading(true);
     }
-    };
+    setLoading(true);
+  };
 
 
   return (
@@ -185,7 +188,15 @@ const AddToy = () => {
             </label>
           </div>
           <div className="mt-5 form-control">
-            <button type='submit' className='btns'>Add Toy</button>
+            {
+              loading ?
+                <button type='submit' className='btns'>Add Toy</button>
+                :
+                <button type='submit' disabled className='flex items-center btns justify-center gap-2'>
+                  <img className='w-4' src="/images/loading.gif" />
+                  <span>Adding Toy...</span>
+                </button>
+            }
           </div>
         </form>
       </Layout>

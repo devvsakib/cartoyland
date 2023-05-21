@@ -59,11 +59,9 @@ const Register = () => {
             return;
         }
 
-        console.log(userData);
         setLoding(true)
         createUserWithEmailAndPassword(auth, userData.email, userData.password)
             .then((userCredential) => {
-                console.log(userCredential);
                 const user = userCredential.user;
                 updateProfile(user, {
                     displayName: userData.name,
@@ -81,7 +79,6 @@ const Register = () => {
 
             })
             .catch((error) => {
-                console.log(error);
                 error.code === 'auth/email-already-in-use' ? toast.error('Email already in use.') : toast.error(error.message)
             })
             .finally(() => setLoding(false))

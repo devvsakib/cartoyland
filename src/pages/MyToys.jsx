@@ -1,6 +1,4 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
@@ -9,18 +7,17 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useContext, useEffect } from 'react';
 import API from '../lib/API';
 import { useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PrimaryButton from '../components/Common/PrimaryButton';
 import { AuthContext } from '../contexts/AuthProvider'
 import Layout from '../components/Layout'
 import Swal from 'sweetalert2'
-import { TextField } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { FaEye, FaPen, FaTrash, FaTrashAlt } from 'react-icons/fa';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -29,17 +26,15 @@ const style = {
     minWidth: 350,
     width: 300,
     height: 600,
-    // mineight: 600,
     overflow: 'scroll',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
 };
 
 const columns = [
-    { id: 'pictureUrl', label: 'Image', minWidth: 30 },
-    { id: 'name', label: 'Name', minWidth: 170 },
+    { id: 'pictureUrl', label: 'Image', minWidth: 20 },
+    { id: 'name', label: 'Name', minWidth: 70 },
     {
         id: 'subcategory',
         label: 'Subcategory',
@@ -60,14 +55,8 @@ const columns = [
         align: 'left',
     },
     {
-        id: 'sellerName',
-        label: 'Seller',
-        minWidth: 20,
-        align: 'left',
-    },
-    {
         id: '',
-        label: 'View',
+        label: '',
         minWidth: 10,
         align: 'left',
     },
@@ -80,7 +69,9 @@ const MyToys = () => {
     const [toys, setToys] = useState([])
     const [selectedToy, setSelectedToy] = useState(null);
     const [updatedToy, setUpdatedToy] = useState({});
+    const [loading, setLoading] = useState(true)
     const { user } = useContext(AuthContext)
+    const [deleting, setDeleting] = useState(false)
 
     // Get all toys by email
     useEffect(() => {
@@ -88,8 +79,9 @@ const MyToys = () => {
             try {
                 const res = await API.getToysByEmail(user.email);
                 setToys(res);
+                setLoading(false);
             } catch (error) {
-                console.log(error);
+                setLoading(false);
             }
         };
         getToys();
@@ -107,12 +99,14 @@ const MyToys = () => {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
+                setDeleting(true)
                 if (result.isConfirmed) {
                     fetch(`https://toymarketplaceapi.onrender.com/toys/${id}`, {
                         method: 'DELETE'
                     })
                         .then(res => res.json())
                         .then(data => {
+                            setDeleting(false)
                             if (data.deletedCount) {
                                 // Remove the deleted toy from the toys state
                                 const remainingToys = toys.filter(toy => toy._id !== id);
@@ -126,9 +120,9 @@ const MyToys = () => {
                         });
                 }
             });
-        } catch (error) {
-            console.log(error);
-        }
+
+        } catch (error) { }
+
     };
 
 
@@ -187,6 +181,15 @@ const MyToys = () => {
                                 </TableHead>
                                 <TableBody>
                                     {
+                                        loading && (
+                                            <TableRow>
+                                                <TableCell colSpan={columns.length} align='center'>
+                                                    <div className='w-full flex justify-center items-center my-10'>
+                                                        <img className='w-16' src="/images/loading.gif" />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ) ||
                                         toys?.map((toy, index) => (
                                             <TableRow key={index}>
                                                 <TableCell><img className='w-20' src={toy.pictureUrl} alt='' /></TableCell>
@@ -194,18 +197,21 @@ const MyToys = () => {
                                                 <TableCell>{toy.subcategory}</TableCell>
                                                 <TableCell>{toy.price}</TableCell>
                                                 <TableCell>{toy.availableQuantity}</TableCell>
-                                                <TableCell><Link to={`/toy/${toy._id}`}><PrimaryButton text={'View'} /></Link></TableCell>
                                                 <TableCell>
-                                                    <button onClick={() => { handleOpen(); setSelectedToy(toy) }}>
-                                                        <PrimaryButton text={'Edit'} />
-                                                    </button>
+                                                    <div className='flex items-center'>
+                                                        <button className='px-2 hover:bg-accent hover:text-white py-1 text-lg text-accent flex items-center'>
+                                                            <Link to={`/toy/${toy._id}`}>
+                                                                <FaEye />
+                                                            </Link>
+                                                        </button>
+                                                        <button className='px-2 hover:bg-accent hover:text-white py-1 text-lg text-accent flex items-center' onClick={() => { handleOpen(); setSelectedToy(toy) }}>
+                                                            <FaPen />
+                                                        </button>
+                                                        <button className='px-2 hover:bg-accent hover:text-white py-1 text-lg text-accent flex items-center' onClick={() => deleteToy(toy._id)}>
+                                                            <FaTrash />
+                                                        </button>
+                                                    </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <button onClick={() => deleteToy(toy._id)}>
-                                                        <PrimaryButton text={'Delete'} />
-                                                    </button>
-                                                </TableCell>
-
                                             </TableRow>
                                         ))
                                     }
@@ -223,96 +229,94 @@ const MyToys = () => {
                     </Paper>
                 </div>
                 {/* MODAL */}
-                <div>
-                    <Modal
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Box sx={style}>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                {selectedToy?.name}
-                            </Typography>
-                            <form className='mx-auto grid gap-4' onSubmit={updateToyDetails}>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Picture URL of the toy</span>
-                                    </label>
-                                    <label className="input-group">
-                                        <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.pictureUrl} type="text" name="pictureUrl" placeholder="Enter picture URL" className="input rounded-lg shadow-lg w-full" />
-                                    </label>
-                                </div>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            {selectedToy?.name}
+                        </Typography>
+                        <form className='mx-auto grid gap-4' onSubmit={updateToyDetails}>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Picture URL of the toy</span>
+                                </label>
+                                <label className="input-group">
+                                    <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.pictureUrl} type="text" name="pictureUrl" placeholder="Enter picture URL" className="input rounded-lg shadow-lg w-full" />
+                                </label>
+                            </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Toy Name</span>
-                                    </label>
-                                    <label className="input-group">
-                                        <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.name} type="text" name="name" placeholder="Enter name" className="input rounded-lg shadow-lg w-full" />
-                                    </label>
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Sub-category</span>
-                                    </label>
-                                    <label className="label">
-                                        <select
-                                            name="subcategory"
-                                            className="select select-bordered rounded-lg w-full"
-                                            defaultValue={selectedToy?.subcategory || ""}
-                                        >
-                                            <option value="">Select sub-category</option>
-                                            <option value="Cars">Cars</option>
-                                            <option value="Trucks">Trucks</option>
-                                            <option value="Mini Trucks">Mini Trucks</option>
-                                            <option value="Police Cars">Police Cars</option>
-                                        </select>
-                                    </label>
-                                </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Toy Name</span>
+                                </label>
+                                <label className="input-group">
+                                    <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.name} type="text" name="name" placeholder="Enter name" className="input rounded-lg shadow-lg w-full" />
+                                </label>
+                            </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Sub-category</span>
+                                </label>
+                                <label className="label">
+                                    <select
+                                        name="subcategory"
+                                        className="select select-bordered rounded-lg w-full"
+                                        defaultValue={selectedToy?.subcategory || ""}
+                                    >
+                                        <option value="">Select sub-category</option>
+                                        <option value="Cars">Cars</option>
+                                        <option value="Trucks">Trucks</option>
+                                        <option value="Mini Trucks">Mini Trucks</option>
+                                        <option value="Police Cars">Police Cars</option>
+                                    </select>
+                                </label>
+                            </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Price</span>
-                                    </label>
-                                    <label className="input-group">
-                                        <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.price} type="text" name="price" placeholder="Enter price" className="input rounded-lg shadow-lg w-full" />
-                                    </label>
-                                </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Price</span>
+                                </label>
+                                <label className="input-group">
+                                    <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.price} type="text" name="price" placeholder="Enter price" className="input rounded-lg shadow-lg w-full" />
+                                </label>
+                            </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Rating</span>
-                                    </label>
-                                    <label className="input-group">
-                                        <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.rating} type="text" max={"5.0"} min={"1.0"} name="rating" placeholder="Enter rating" className="input rounded-lg shadow-lg w-full" />
-                                    </label>
-                                </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Rating</span>
+                                </label>
+                                <label className="input-group">
+                                    <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.rating} type="text" max={"5.0"} min={"1.0"} name="rating" placeholder="Enter rating" className="input rounded-lg shadow-lg w-full" />
+                                </label>
+                            </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Available quantity</span>
-                                    </label>
-                                    <label className="input-group">
-                                        <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.availableQuantity} type="number" name="availableQuantity" placeholder="Enter available quantity" className="input rounded-lg shadow-lg w-full" />
-                                    </label>
-                                </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Available quantity</span>
+                                </label>
+                                <label className="input-group">
+                                    <input onChange={(e) => setUpdatedToy({ ...updatedToy, name: e.target.value })} defaultValue={selectedToy?.availableQuantity} type="number" name="availableQuantity" placeholder="Enter available quantity" className="input rounded-lg shadow-lg w-full" />
+                                </label>
+                            </div>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Detail description</span>
-                                    </label>
-                                    <label className="label">
-                                        <textarea name="detailDescription" defaultValue={selectedToy?.detailDescription} placeholder="Enter detail description" className="textarea textarea-bordered rounded-lg w-full" />
-                                    </label>
-                                </div>
-                                <button type='submit'>
-                                    <PrimaryButton text={'Update'} />
-                                </button>
-                            </form>
-                        </Box>
-                    </Modal>
-                </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Detail description</span>
+                                </label>
+                                <label className="label">
+                                    <textarea name="detailDescription" defaultValue={selectedToy?.detailDescription} placeholder="Enter detail description" className="textarea textarea-bordered rounded-lg w-full" />
+                                </label>
+                            </div>
+                            <button type='submit'>
+                                <PrimaryButton text={'Update'} />
+                            </button>
+                        </form>
+                    </Box>
+                </Modal>
             </Layout >
         </div >
     )

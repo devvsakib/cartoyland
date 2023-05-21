@@ -23,26 +23,20 @@ const Home = () => {
       const res = await API.getCategories()
       setCategories(res)
       setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
   const getFeaturedToys = async () => {
     try {
       const res = await API.featuredToys()
       setFeaturedToys(res)
       setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
   const getProductByCategory = async () => {
     try {
       const res = await API.getToyByCategory(categoryName)
       setProductByCategory(res)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
   useEffect(() => {
     AOS.init();
