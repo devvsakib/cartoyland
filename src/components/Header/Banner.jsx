@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import PrimaryButton from '../../../../frontend/src/components/Common/PrimaryButton'
+import PrimaryButton from '../Common/PrimaryButton'
 
 const Banner = () => {
   const [coupon, setCoupon] = useState('CT50')
