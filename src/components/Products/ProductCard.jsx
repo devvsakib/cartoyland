@@ -6,8 +6,8 @@ import Rating from "react-rating"
 const ProductCard = ({ product, index }) => {
     return (
         <div
-            data-aos="fade-right"
-            data-aos-delay={index * 200}
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
             className='flex flex-col items-center shadow-lg text-secondary justify-center gap-2 rounded-md relative'>
             <div className='absolute top-2 left-2 badge bg-accent-content'>-10%</div>
             <div className='overflow-hidden h-44 w-full'>
