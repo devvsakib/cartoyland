@@ -19,8 +19,8 @@ const Banner = () => {
     <div className="bg-gradient-to-br  lg:min-h-[80vh] from-[#FFD738]/40 to-accent ">
       <div className='bg-gradient-to-t py-5 lg:h-[80vh] from-white via-white/0'>
         {/* <div className="py-10 pt-28 banner__gradient min-h-screen"> */}
-        <div className="container mx-auto px-5">
-          <div className="flex flex-col lg:flex-row items-center justify-between">
+        <div className="container justify-center items-center mx-auto px-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center justify-between">
             <div className="flex flex-col items-center font-barlow lg:items-start mt-20 lg:mt-0">
               <h1 className="text-6xl lg:text-8xl font-semibold  lg:mb-5">CarToyLand</h1>
               <p className=" text-2xl">Unleash the Joy of Toy Cars!</p>
@@ -31,8 +31,8 @@ const Banner = () => {
                 {/* <button className="bg-white px-5 py-2 rounded text-xl font-semibold text-accent">Register</button> */}
               </div>
             </div>
-            <div className="relative flex items-center justify-center lg:justify-end gap-5">
-              <img data-aos="fade-left" className='min-w-full lg:w-4/5' src="/images/banner_image.svg" />
+            <div className="relative mt-24 flex items-center justify-center lg:justify-end gap-5">
+              <img data-aos="fade-left" className='min-w-full lg:w-[400px]' src="/images/banner_image.svg" />
               <div className='absolute border border-white/30 bg-white/30 p-5 bottom-[25%] left-0 lg:left-auto lg:right-0 lg:top-auto px-5 lg:px-10 text-white rounded-2xl backdrop-blur-sm'>
                 <div className='text-lg lg:text-2xl'>
                   Discount <br /> <span className="text-5xl lg:text-6xl font-semibold text-white">50%</span>
