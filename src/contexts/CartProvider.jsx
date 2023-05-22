@@ -61,7 +61,7 @@ export const CartProvider = ({ children }) => {
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
     //  Total price of items in the cart
-    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
     // Provide the cart context value to the children
     return (
