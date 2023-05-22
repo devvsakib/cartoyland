@@ -29,7 +29,11 @@ const GalleryS = () => {
             <div className='flex justify-center'>
                 <Masonry columns={{ xs: 2, sm: 3, md: 4 }} spacing={2}>
                     {images.map((item, index) => (
-                        <Item key={index}>
+                        <Item key={index}
+                data-aos="fade-right"
+data-aos-delay={index * 100}
+                    data-aos-duration="1000"
+                        >
                             <img
                                 src={item.image}
                                 loading="lazy"

@@ -11,9 +11,7 @@ const FeaturedToys = ({ product }) => {
             <div className='grid gap-5 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-10'>
                 {product?.map((toy, index) => (
                     <div data-aos="fade-up"
-                        data-aos-delay={index * 100}
-                        data-aos-easing="ease-out-cubic"
-                        data-aos-duration="1000" className='flex flex-col items-center shadow-lg text-secondary justify-center gap-2 rounded-md relative'>
+                        data-aos-delay={index * 100} className='flex flex-col items-center shadow-lg text-secondary justify-center gap-2 rounded-md relative'>
                         <div className='absolute top-2 left-2 badge bg-accent-content'>-10%</div>
                         <div className='overflow-hidden h-44 w-full'>
                             <img
