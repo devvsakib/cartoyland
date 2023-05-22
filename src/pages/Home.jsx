@@ -7,7 +7,6 @@ import Layout from "../components/Layout"
 import API from '../lib/API';
 import FeaturedToys from "../components/Feature/FeaturedToys"
 import Products from "../components/Products/Products"
-import AOS from 'aos';
 import GalleryS from "../components/Feature/GalleryS"
 
 const Home = () => {
@@ -22,24 +21,25 @@ const Home = () => {
     try {
       const res = await API.getCategories()
       setCategories(res)
-      setLoading(false)
-    } catch (error) {}
+    } catch (error) { }
   }
   const getFeaturedToys = async () => {
+    setLoading(true)
     try {
       const res = await API.featuredToys()
       setFeaturedToys(res)
       setLoading(false)
-    } catch (error) {}
+    } catch (error) { }
   }
   const getProductByCategory = async () => {
+    setLoading(true)
     try {
       const res = await API.getToyByCategory(categoryName)
       setProductByCategory(res)
-    } catch (error) {}
+      setLoading(false)
+    } catch (error) { }
   }
   useEffect(() => {
-    AOS.init();
     getCategories()
     getFeaturedToys()
   }, [])
@@ -54,7 +54,7 @@ const Home = () => {
       <Layout>
         <Feature />
         <Slider categories={categories} />
-        <FeaturedToys product={featuredToys} />
+        <FeaturedToys product={featuredToys} loading={loading} />
         <Products product={productByCategory} setCategoryName={setCategoryName} />
         <GalleryS />
         <CTA />

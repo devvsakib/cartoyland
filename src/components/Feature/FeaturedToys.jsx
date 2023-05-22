@@ -3,11 +3,15 @@ import { FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import discountPrice from '../../utils/getDiscountPrice'
 import PrimaryButton from '../Common/PrimaryButton'
-import ProductCard from '../Products/ProductCard'
-const FeaturedToys = ({ product }) => {
+const FeaturedToys = ({ product, loading }) => {
     return (
         <div className='my-32'>
             <h2 className='text-2xl font-bold mb-8'>Featured Toys</h2>
+            {
+                loading && <div className='flex justify-center items-center'>
+                    <img className='w-20' src="/images/loading.svg" alt="" />
+                </div>
+            }
             <div className='grid gap-5 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-10'>
                 {product?.map((toy, index) => (
                     <div data-aos="fade-up"
